@@ -18,7 +18,8 @@ class NewVideo(View):
 
     def get(self, request):
         variable_a = 'New Video'
-        return render(request, self.template_name, {'variable_a':variable_a})
+        form = FormClass()
+        return render(request, self.template_name, {'variable_a':variable_a, 'form':form})
 
 
     def post(get, request):
