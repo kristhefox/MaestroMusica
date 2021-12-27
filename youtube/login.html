@@ -11,8 +11,10 @@ Log into your account
 <br>
 <form action="login" method="POST">
     {% csrf_token %}
-    {{ form }}
-
-    <br><input type="submit" value="Log in!">
+    <table>
+    {{ form.as_table }}
+    </table>
+    <br>
+    <button type="button" class="btn btn-primary">Log In</button>
 </form>
 {% endblock %}

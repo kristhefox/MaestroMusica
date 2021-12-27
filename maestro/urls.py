@@ -20,7 +20,7 @@ from youtube.views import HomeView, NewVideo, LoginView, RegisterView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view()),
-    path('new_video', NewVideo.as_view()),
+    path('new-video', NewVideo.as_view()),
     path('login', LoginView.as_view()),
     path('register', RegisterView.as_view())
     
