@@ -1,15 +1,17 @@
+import string, random
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import View, HttpResponse
 from .forms import LoginForm, RegisterForm, NewVideoForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from .models import Video, Comment
 
 
 class HomeView(View):
     template_name = 'index.html'
     def get(self, request):
-        variable_a = 'Text'
+        variable_a = 'Title'
         return render(request, self.template_name, {'variable_a':variable_a})
 
 
@@ -63,10 +65,30 @@ class RegisterView(View):
 
 class NewVideo(View):
     template_name = 'new-video.html'
+    
     def get(self, request):
-        variable_a = 'New Video'
+        if request.user.is_authenticated == False:
+            return HttpResponseRedirect('/')
+        
         form = NewVideoForm()
-        return render(request, self.template_name, {'variable_a':variable_a, 'form':form})
+        return render(request, self.template_name, {'form':form})
 
     def post(self, request):
-        return HttpResponse('Index. POST request')
+        form = NewVideoForm(request.POST, request.FILES)
+        
+
+        if form.is_valid():
+            # new video
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            file = form.cleaned_data['file']  
+
+            random_characters = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))      
+            path = random_characters+file.name
+
+            new_video = Video(title=title, description=description, user=request.user, path=path)
+            new_video.save()
+
+            return HttpResponseRedirect('/video/{}'.format(new_video.id))
+        else:
+            return HttpResponse('Form is invalid')
