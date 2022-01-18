@@ -11,8 +11,10 @@ from .models import Video, Comment
 class HomeView(View):
     template_name = 'index.html'
     def get(self, request):
-        variable_a = 'Title'
-        return render(request, self.template_name, {'variable_a':variable_a})
+        
+        recent_video = Video.objects.order_by('-datetime')[:10]
+
+        return render(request, self.template_name, {'menu_item': 'home', 'recent_video': recent_video})
 
 
 class LoginView(View):
@@ -68,7 +70,7 @@ class NewVideo(View):
     
     def get(self, request):
         if request.user.is_authenticated == False:
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/register')
         
         form = NewVideoForm()
         return render(request, self.template_name, {'form':form})
